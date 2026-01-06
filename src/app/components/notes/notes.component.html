@@ -36,7 +36,7 @@
     <div #noteEl [class.mx-auto]="Shared.noteViewType.value === 'list' ">
         <ng-container *ngFor="let note of notes | notesTools:currentPageName ;trackBy: trackBy">
             <div #noteEL class="note-container">
-                <span class="note-badge" *ngIf="currentPage.label && (note.archived || note.trashed)"
+                <span class="note-badge" *ngIf="currentPage.folder && (note.archived || note.trashed)"
                     [innerText]="note.archived ? 'archive': (note.trashed ? 'trash' : '') "></span>
                 <div class="note-main"
                     [ngStyle]="{'background-color':note.bgColor,'border-color':note.bgColor,'background-image' : note.bgImage}">
@@ -81,11 +81,11 @@
                         </ng-template>
                     </div>
                     <div class="labels-container min">
-                        <ng-container *ngFor="let label of note.labels">
-                            <div class="label-container" *ngIf="label.added">
-                                <div class="label"><span>{{label.name}}</span>
-                                    <div class="cancel-icon pop" data-pop="Remove Label"
-                                        (click)="removeLabel(note,label)"></div>
+                        <ng-container *ngFor="let folder of note.folders">
+                            <div class="label-container" *ngIf="folder.added">
+                                <div class="label"><span>{{folder.name}}</span>
+                                    <div class="cancel-icon pop" data-pop="Remove Folder"
+                                        (click)="removeFolder(note,folder)"></div>
                                 </div>
                             </div>
                         </ng-container>
@@ -127,12 +127,12 @@
 
 <!--? --------tooltips-------- -->
 <!--? more MENU -->
-<div #moreMenuTt data-tooltip="true" data-is-tooltip-open="false" class="moreMenu">
+    <div #moreMenuTt data-tooltip="true" data-is-tooltip-open="false" class="moreMenu">
     <div (click)="moreMenu(moreMenuTt).trash()">Delete note</div>
-    <div #labelMenuBtn (click)="moreMenu(moreMenuTt).openLabelMenu(labelMenuTt)">Add label
+    <div #labelMenuBtn (click)="moreMenu(moreMenuTt).openFolderMenu(labelMenuTt)">Add folder
     </div>
     <div (click)="moreMenu(moreMenuTt).clone()">Make a copy</div>
-</div>
+    </div>
 <!--? color MENU -->
 <div #colorMenuTt data-tooltip="true" data-is-tooltip-open="false" class="colorMenu">
     <div class="first-row">
@@ -152,15 +152,15 @@
 </div>
 <!--? label MENU -->
 <div #labelMenuTt data-tooltip="true" data-is-tooltip-open="false" class="labelMenu">
-    <div class="title">Label note</div>
+    <div class="title">Folder note</div>
     <div class="search">
-        <input type="text" maxlength="50" placeholder="Enter label name">
+        <input type="text" maxlength="50" placeholder="Enter folder name">
         <div class="search-icon"></div>
     </div>
     <div class="label-list-container">
-        <div class="label-list" *ngFor="let label of labels" (click)="labelMenu(label)">
-            <div [class.done]='label.added' class="check-icon"></div>
-            <div class="label-name">{{label.name}}</div>
+        <div class="label-list" *ngFor="let folder of folders" (click)="folderMenu(folder)">
+            <div [class.done]='folder.added' class="check-icon"></div>
+            <div class="label-name">{{folder.name}}</div>
         </div>
     </div>
 </div>

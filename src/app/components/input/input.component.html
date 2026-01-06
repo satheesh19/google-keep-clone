@@ -18,13 +18,13 @@
             </ng-container>
             <!--? labels -->
             <div class="labels-container">
-                <ng-container *ngFor="let label of labels">
-                    <div class="label-container" *ngIf="label.added">
-                        <div class="label"><span>{{label.name}}</span>
-                            <div class="cancel-icon" (click)="label.added = !label.added"></div>
+                <ng-container *ngFor="let folder of folders">
+                        <div class="label-container" *ngIf="folder.added">
+                            <div class="label"><span>{{folder.name}}</span>
+                                <div class="cancel-icon" (click)="folder.added = !folder.added"></div>
+                            </div>
                         </div>
-                    </div>
-                </ng-container>
+                    </ng-container>
             </div>
         </div>
         <div #notePin data-pinned="false" [class.pinned]="notePin.dataset['pinned'] === 'true'" class="pin-icon H pop"
@@ -122,7 +122,7 @@
     </div>
     <div #labelMenuBtn
         (click)="this.Shared.closeTooltip(moreMenuTt);openTooltip(moreMenuTtBtn!.nativeElement,labelMenuTt)">
-        Add label
+        Add folder
     </div>
     <!-- <div [hidden]="moreMenuEls.drawing.disabled">{{moreMenuEls.drawing.value}}</div> -->
     <div [hidden]="moreMenuEls.copy.disabled" (click)="moreMenu(moreMenuTt).clone()">
@@ -152,15 +152,15 @@
 </div>
 <!--? label MENU -->
 <div #labelMenuTt data-tooltip="true" data-is-tooltip-open="false" class="labelMenu">
-    <div class="title">Label note</div>
+    <div class="title">Folder note</div>
     <div class="search">
-        <input type="text" maxlength="50" placeholder="Enter label name">
+        <input type="text" maxlength="50" placeholder="Enter folder name">
         <div class="search-icon"></div>
     </div>
     <div class="label-list-container">
-        <div class="label-list" *ngFor="let label of labels" (click)="label.added = !label.added">
-            <div [class.done]='label.added' class="check-icon"></div>
-            <div class="label-name">{{label.name}}</div>
+        <div class="label-list" *ngFor="let folder of folders" (click)="folder.added = !folder.added">
+            <div [class.done]='folder.added' class="check-icon"></div>
+            <div class="label-name">{{folder.name}}</div>
         </div>
     </div>
 </div>

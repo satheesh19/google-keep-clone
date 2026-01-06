@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } fro
 import Bricks from 'bricks.js'
 import { SharedService } from 'src/app/services/shared.service';
 import { bgColors, bgImages } from 'src/app/interfaces/tooltip';
-import { LabelI } from 'src/app/interfaces/labels';
+import { FolderI } from 'src/app/interfaces/folders';
 import { ActivationEnd, NavigationEnd, Router } from '@angular/router';
 @Component({
   selector: 'app-notes',
@@ -23,10 +23,10 @@ export class NotesComponent implements OnInit {
   currentPage = {
     archive: false,
     trash: false,
-    label: undefined
+    folder: undefined
   }
   currentPageName = ''
-  labels: LabelI[] = []
+  folders: FolderI[] = []
   bgColors = bgColors
   bgImages = bgImages
   noteWidth = 240
@@ -136,12 +136,12 @@ export class NotesComponent implements OnInit {
     this.Shared.note.db.updateKey({ pinned: pinned })
   }
 
-  //? labels -------------------------------------------------------------
+  //? folders -------------------------------------------------------------
 
-  removeLabel(note: NoteI, label: LabelI) {
+  removeFolder(note: NoteI, folder: FolderI) {
     this.Shared.note.id = note.id!
-    label.added = !label.added
-    this.Shared.note.db.updateKey({ labels: note.labels })
+    folder.added = !folder.added
+    this.Shared.note.db.updateKey({ folders: note.folders })
   }
   //? tooltip  -----------------------------------------------------------
 
@@ -160,14 +160,16 @@ export class NotesComponent implements OnInit {
       clone: () => {
         this.Shared.note.db.clone()
       },
-      openLabelMenu: (tooltipEl: HTMLDivElement) => {
-        this.labels = JSON.parse(JSON.stringify(this.Shared.label.list))
+      openFolderMenu: (tooltipEl: HTMLDivElement) => {
+        this.folders = JSON.parse(JSON.stringify(this.Shared.folder.list))
         this.Shared.createTooltip(this.Ttbutton!, tooltipEl)
         this.Shared.note.db.get().then(note => {
-          note.labels.forEach(noteLabel => {
-            let label = this.labels.find(x => x.name === noteLabel.name)
-            if (label) label.added = noteLabel.added
-          })
+          if (note && note.folders && Array.isArray(note.folders)) {
+            note.folders.forEach(noteLabel => {
+              let folder = this.folders.find(x => x.name === noteLabel.name)
+              if (folder) folder.added = noteLabel.added
+            })
+          }
         })
       }
     }
@@ -184,9 +186,9 @@ export class NotesComponent implements OnInit {
     }
   }
 
-  labelMenu(label: LabelI) {
-    label.added = !label.added
-    this.Shared.note.db.updateKey({ labels: this.labels })
+  folderMenu(folder: FolderI) {
+    folder.added = !folder.added
+    this.Shared.note.db.updateKey({ folders: this.folders })
   }
 
   // ? archive page
@@ -228,9 +230,9 @@ export class NotesComponent implements OnInit {
         url.url.includes('trash') ? this.currentPage.trash = true : this.currentPage.trash = false
       }
       else if (url instanceof ActivationEnd) {
-        this.currentPage.label = url.snapshot.params['name']
+        this.currentPage.folder = url.snapshot.params['name']
       }
-      this.currentPageName = this.currentPage.label ? this.currentPage.label : this.currentPage.archive ? 'archived' : (this.currentPage.trash ? 'trashed' : 'home')
+      this.currentPageName = this.currentPage.folder ? this.currentPage.folder : this.currentPage.archive ? 'archived' : (this.currentPage.trash ? 'trashed' : 'home')
     })
   }
 }

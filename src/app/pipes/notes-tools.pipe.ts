@@ -15,10 +15,10 @@ export class NotesToolsPipe implements PipeTransform {
       return object.filter(x => x.trashed === true)
     }
     else if (type === 'home') {
-      return object.filter(x => x.trashed === false && x.archived === false)
+      return object.filter(x => x.trashed === false && x.archived === false && (!x.folders || !x.folders.some(f => f.added)))
     }
     else {
-      return object.filter(note => note.labels.some(label => label.name === type && label.added))
+      return object.filter(note => note.folders.some(folder => folder.name === type && folder.added))
     }
   }
 

@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input } fr
 import { bgImages, bgColors } from 'src/app/interfaces/tooltip';
 import { SharedService } from 'src/app/services/shared.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { LabelI } from 'src/app/interfaces/labels';
+import { FolderI } from 'src/app/interfaces/folders';
 type InputLengthI = { title?: number, body?: number, cb?: number }
 @Component({
   selector: 'app-input',
@@ -31,7 +31,7 @@ export class InputComponent implements OnInit {
   @Input() noteToEdit: NoteI = {} as NoteI
   //? -----------------------------------------------------
   checkBoxes: CheckboxI[] = []
-  labels: LabelI[] = []
+  folders: FolderI[] = []
   isArchived = false
   isTrashed = false
   isCboxCompletedListCollapsed = false
@@ -69,7 +69,7 @@ export class InputComponent implements OnInit {
       this.inputLength.next({ title: 0, body: 0, cb: 0 })
       document.addEventListener('mousedown', this.mouseDownEvent)
     }
-    this.labels = JSON.parse(JSON.stringify(this.Shared.label.list))
+    this.folders = JSON.parse(JSON.stringify(this.Shared.folder.list))
     /*
     the correct way is to use `mousedown` because : 
     https://www.javascripttutorial.net/javascript-dom/javascript-mouse-events/
@@ -112,7 +112,7 @@ export class InputComponent implements OnInit {
       bgImage: this.noteContainer.nativeElement.style.backgroundImage,
       checkBoxes: this.checkBoxes,
       isCbox: this.isCbox.value,
-      labels: this.labels.filter(x => x.added),
+      folders: this.folders.filter(x => x.added),
       archived: this.isArchived,
       trashed: this.isTrashed
     }
@@ -237,9 +237,9 @@ export class InputComponent implements OnInit {
     this.isTrashed = note.trashed
     //
     this.inputLength.next({ title: note.noteTitle.length, body: note.noteBody ? note.noteBody?.length : 0, cb: note.checkBoxes?.length! })
-    note.labels.forEach(noteLabel => {
-      let label = this.labels.find(x => x.name === noteLabel.name)
-      if (label) label.added = noteLabel.added
+    note.folders.forEach(noteLabel => {
+      let folder = this.folders.find(x => x.name === noteLabel.name)
+      if (folder) folder.added = noteLabel.added
     })
     this.cd.detectChanges()
   }

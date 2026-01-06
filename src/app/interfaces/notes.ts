@@ -1,4 +1,4 @@
-import { LabelI } from './labels';
+import { FolderI } from './folders';
 
 export interface NoteI {
     id?: number
@@ -9,7 +9,7 @@ export interface NoteI {
     bgImage: string
     checkBoxes?: CheckboxI[]
     isCbox: boolean
-    labels: LabelI[]
+    folders: FolderI[]
     archived: boolean
     trashed: boolean
 }
@@ -33,7 +33,7 @@ export interface NoteModelI {
         add(data: NoteI): Promise<number>
         update(data: NoteI): void
         updateKey(object: UpdateKeyI): void
-        updateAllLabels(labelId: number, labelValue: string): void
+        updateAllFolders(labelId: number, labelValue: string): void
         get(): Promise<NoteI>
         clone(): void
         delete(): void

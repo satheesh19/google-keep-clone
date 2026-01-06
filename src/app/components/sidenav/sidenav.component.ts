@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SharedService } from 'src/app/services/shared.service';
-import { LabelActionsT } from 'src/app/interfaces/labels';
+import { FolderActionsT } from 'src/app/interfaces/folders';
 import { Router } from '@angular/router';
 
 @Component({
@@ -32,25 +32,31 @@ export class NavComponent implements OnInit {
     }
   }
 
-  // ? labels ----------------------------------------------------
+  // ? folders ----------------------------------------------------
 
-  addLabel(el: HTMLInputElement) {
+  addFolder(el: HTMLInputElement) {
     if (!el) return
-    this.Shared.label.db.add({ name: el.value })
-      .then(() => { this.labelError.nativeElement.hidden = true; el.value = ''; el.focus() })
-      .catch(x => { if (x.name === "ConstraintError") this.labelError.nativeElement.hidden = false; el.focus() })
+    try {
+      console.log('NavComponent.addFolder', el.value)
+      this.Shared.folder.db.add({ name: el.value })
+        .then(() => { this.labelError.nativeElement.hidden = true; el.value = ''; el.focus() })
+        .catch(x => { console.error('addFolder error', x); if (x && x.name === "ConstraintError") this.labelError.nativeElement.hidden = false; el.focus() })
+    } catch (err) {
+      console.error('addFolder unexpected error', err)
+      el.focus()
+    }
   }
 
-  editLabel(id: number) {
-    this.Shared.label.id = id
-    let actions: LabelActionsT = {
+  editFolder(id: number) {
+    this.Shared.folder.id = id
+    let actions: FolderActionsT = {
       delete: () => {
-        this.Shared.label.db.delete()
-        this.Shared.label.db.updateAllLabels('')
+        this.Shared.folder.db.delete()
+        this.Shared.folder.db.updateAllFolders('')
       },
       update: (value: string) => {
-        this.Shared.label.db.update({ name: value })
-        this.Shared.label.db.updateAllLabels(value)
+        this.Shared.folder.db.update({ name: value })
+        this.Shared.folder.db.updateAllFolders(value)
       }
     }
     return actions

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { NoteI, NoteModelI, UpdateKeyI } from '../interfaces/notes';
 import { NotesService } from './notes.service';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { LabelsService } from './labels.service';
-import { LabelI, LabelModelI } from '../interfaces/labels';
+import { FoldersService } from './folders.service';
+import { FolderI, FolderModelI } from '../interfaces/folders';
 import { createPopper } from '@popperjs/core';
 declare var Snackbar: any
 @Injectable({
@@ -11,8 +11,8 @@ declare var Snackbar: any
 })
 export class SharedService {
 
-  constructor(private Notes: NotesService, private Labels: LabelsService) {
-    this.get.labels()
+  constructor(private Notes: NotesService, private Folders: FoldersService) {
+    this.get.folders()
     this.get.notes()
   }
 
@@ -27,9 +27,9 @@ export class SharedService {
         error: error => console.error(error)
       })
     },
-    labels: () => {
-      this.Labels.labelsList$.subscribe({
-        next: (result: LabelI[]) => this.label.list = result.reverse(),
+    folders: () => {
+      this.Folders.foldersList$.subscribe({
+        next: (result: FolderI[]) => this.folder.list = result.reverse(),
         error: error => console.error(error)
       })
     }
@@ -51,7 +51,7 @@ export class SharedService {
       add: (data: NoteI) => this.Notes.add(data),
       update: (data: NoteI) => this.Notes.update(data, this.note.id),
       updateKey: (data: UpdateKeyI) => this.Notes.updateKey(data, this.note.id),
-      updateAllLabels: (labelId: number, labelValue: string) => this.Notes.updateAllLabels(labelId, labelValue),
+      updateAllFolders: (labelId: number, labelValue: string) => this.Notes.updateAllFolders(labelId, labelValue),
       get: () => this.Notes.get(this.note.id),
       clone: () => this.Notes.clone(this.note.id),
       delete: () => this.Notes.delete(this.note.id),
@@ -63,16 +63,16 @@ export class SharedService {
 
   }
 
-  // ? labell -------------------------------------------------
+  // ? folder -------------------------------------------------
 
-  label: LabelModelI = {
+  folder: FolderModelI = {
     id: -1,
     list: [],
     db: {
-      add: async (data: LabelI) => this.Labels.add(data),
-      update: (data: LabelI) => this.Labels.update(data, this.label.id),
-      delete: () => this.Labels.delete(this.label.id),
-      updateAllLabels: (value) => this.note.db.updateAllLabels(this.label.id, value),
+      add: async (data: FolderI) => this.Folders.add(data),
+      update: (data: FolderI) => this.Folders.update(data, this.folder.id),
+      delete: () => this.Folders.delete(this.folder.id),
+      updateAllFolders: (value) => this.note.db.updateAllFolders(this.folder.id, value),
     }
   }
 

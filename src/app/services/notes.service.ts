@@ -70,7 +70,7 @@ export class NotesService {
     }
   }
 
-  updateAllLabels(labelId: number, labelValue: string) {
+  updateAllFolders(labelId: number, labelValue: string) {
     //how i miss relational databases here 😟
     try {
       db.transaction('rw', db.notes, () => {
@@ -78,11 +78,11 @@ export class NotesService {
           db.notes.each(el => {
             db.notes.where('id').equals(el.id!).modify((note: NoteI) => {
               if (labelValue === '') {
-                let i = note.labels.findIndex(x => x.id === labelId)
-                note.labels.splice(i, 1)
+                let i = note.folders.findIndex(x => x.id === labelId)
+                note.folders.splice(i, 1)
               } else {
-                let label = note.labels.find(x => x.id === labelId)
-                if (label) label.name = labelValue
+                let folder = note.folders.find(x => x.id === labelId)
+                if (folder) folder.name = labelValue
               }
             })
           })
